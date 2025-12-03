@@ -1,0 +1,256 @@
+.tasks-panel {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 12px;
+    padding: 20px;
+    color: #f1f5f9;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    height: 100%;
+    overflow-y: auto;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.panel-section {
+    flex: 1;
+    min-height: 0;
+}
+
+.section-header h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.orders-list,
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* Order Cards */
+.order-card {
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 8px;
+    padding: 16px;
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.order-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.order-card.priority-urgent {
+    border-left-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.order-card.priority-high {
+    border-left-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.order-card.priority-medium {
+    border-left-color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.order-card.priority-low {
+    border-left-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.order-id {
+    font-weight: 700;
+    font-size: 16px;
+    color: #f1f5f9;
+}
+
+.order-priority {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.order-items {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    padding: 4px 0;
+}
+
+.item-name {
+    color: #cbd5e1;
+    flex: 1;
+}
+
+.item-qty {
+    font-weight: 700;
+    color: #3b82f6;
+    font-size: 14px;
+}
+
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.order-deadline {
+    font-weight: 600;
+    color: #f59e0b;
+}
+
+/* Task Cards */
+.task-card {
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    transition: all 0.3s ease;
+}
+
+.task-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.task-card.status-in_progress {
+    border-left: 4px solid #3b82f6;
+}
+
+.task-card.status-completed {
+    border-left: 4px solid #10b981;
+    opacity: 0.7;
+}
+
+.task-card.status-pending {
+    border-left: 4px solid #94a3b8;
+}
+
+.task-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.task-icon {
+    font-size: 18px;
+}
+
+.task-type {
+    flex: 1;
+    font-weight: 600;
+    color: #f1f5f9;
+    font-size: 14px;
+}
+
+.task-id {
+    font-size: 12px;
+    color: #64748b;
+    font-family: 'Courier New', monospace;
+}
+
+.task-progress {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.progress-bar-container {
+    flex: 1;
+    height: 8px;
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.progress-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #3b82f6;
+    min-width: 40px;
+    text-align: right;
+}
+
+.task-employee {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+
+/* Scrollbar customizado */
+.orders-list::-webkit-scrollbar,
+.tasks-list::-webkit-scrollbar,
+.tasks-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.orders-list::-webkit-scrollbar-track,
+.tasks-list::-webkit-scrollbar-track,
+.tasks-panel::-webkit-scrollbar-track {
+    background: #0f172a;
+    border-radius: 3px;
+}
+
+.orders-list::-webkit-scrollbar-thumb,
+.tasks-list::-webkit-scrollbar-thumb,
+.tasks-panel::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+}
+
+.orders-list::-webkit-scrollbar-thumb:hover,
+.tasks-list::-webkit-scrollbar-thumb:hover,
+.tasks-panel::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
