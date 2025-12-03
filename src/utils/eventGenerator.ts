@@ -122,21 +122,38 @@ export function shouldGenerateOrder(
     lastOrderTime: number
 ): boolean {
     // Não gerar se já houver muitos pedidos pendentes
-    if (currentOrders >= 10) return false;
+    if (currentOrders >= 10) {
+        console.log('⏸️ [eventGenerator] Muitos pedidos pendentes, aguardando...');
+        return false;
+    }
 
     // Horário comercial: 8h às 18h (480 minutos a 1080 minutos do dia)
     const minutesInDay = (gameTime / (60 * 1000)) % (24 * 60);
-    if (minutesInDay < 480 || minutesInDay > 1080) return false;
+    const hours = Math.floor(minutesInDay / 60);
+    const mins = Math.floor(minutesInDay % 60);
+
+    if (minutesInDay < 480 || minutesInDay > 1080) {
+        if (Math.random() < 0.01) { // Log ocasional para não poluir
+            console.log(`⏰ [eventGenerator] Fora do horário comercial: ${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`);
+        }
+        return false;
+    }
 
     // Tempo desde o último pedido (em minutos)
     const timeSinceLastOrder = (gameTime - lastOrderTime) / (60 * 1000);
 
     // Probabilidade aumenta com o tempo
-    // Em média, 1 pedido a cada 15-30 minutos
-    if (timeSinceLastOrder < 10) return false;
+    // AJUSTADO: 1 pedido a cada 3-10 minutos (era 15-30)
+    if (timeSinceLastOrder < 2) return false;
 
-    const probability = Math.min((timeSinceLastOrder - 10) / 20, 0.8);
-    return Math.random() < probability;
+    const probability = Math.min((timeSinceLastOrder - 2) / 8, 0.9);
+    const willGenerate = Math.random() < probability;
+
+    if (willGenerate) {
+        console.log(`✅ [eventGenerator] Condições OK para gerar pedido! (${timeSinceLastOrder.toFixed(1)} min desde último)`);
+    }
+
+    return willGenerate;
 }
 
 // Verificar se deve gerar um novo caminhão
@@ -146,18 +163,35 @@ export function shouldGenerateTruck(
     lastTruckTime: number
 ): boolean {
     // Não gerar se já houver muitos caminhões esperando
-    if (currentTrucks >= 3) return false;
+    if (currentTrucks >= 3) {
+        console.log('⏸️ [eventGenerator] Muitos caminhões na doca, aguardando...');
+        return false;
+    }
 
     // Horário de recebimento: 6h às 14h (360 minutos a 840 minutos do dia)
     const minutesInDay = (gameTime / (60 * 1000)) % (24 * 60);
-    if (minutesInDay < 360 || minutesInDay > 840) return false;
+    const hours = Math.floor(minutesInDay / 60);
+    const mins = Math.floor(minutesInDay % 60);
+
+    if (minutesInDay < 360 || minutesInDay > 840) {
+        if (Math.random() < 0.01) { // Log ocasional
+            console.log(`⏰ [eventGenerator] Fora do horário de recebimento: ${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`);
+        }
+        return false;
+    }
 
     // Tempo desde o último caminhão (em minutos)
     const timeSinceLastTruck = (gameTime - lastTruckTime) / (60 * 1000);
 
-    // Em média, 1 caminhão a cada 60-90 minutos
-    if (timeSinceLastTruck < 45) return false;
+    // AJUSTADO: 1 caminhão a cada 20-40 minutos (era 60-90)
+    if (timeSinceLastTruck < 15) return false;
 
-    const probability = Math.min((timeSinceLastTruck - 45) / 45, 0.7);
-    return Math.random() < probability;
+    const probability = Math.min((timeSinceLastTruck - 15) / 25, 0.8);
+    const willGenerate = Math.random() < probability;
+
+    if (willGenerate) {
+        console.log(`✅ [eventGenerator] Condições OK para gerar caminhão! (${timeSinceLastTruck.toFixed(1)} min desde último)`);
+    }
+
+    return willGenerate;
 }

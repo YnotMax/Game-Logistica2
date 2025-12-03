@@ -125,8 +125,18 @@ export function initializeGameState(config: GameConfig = DEFAULT_CONFIG): GameSt
     const warehouse = createWarehouseLayout(config.warehouseRows, config.warehouseCols);
     const employees = createInitialEmployees(config.initialEmployees);
 
+    // Começar às 8h00 (horário comercial) - 8 * 60 * 60 * 1000 ms
+    const startTime = 8 * 60 * 60 * 1000;
+
+    console.log('🏗️ [gameInit] Criando armazém:', {
+        tamanho: `${config.warehouseRows}x${config.warehouseCols}`,
+        funcionários: config.initialEmployees,
+        dinheiro: config.initialMoney,
+        horaInicial: '08:00',
+    });
+
     return {
-        currentTime: 0, // Começa às 00:00 (meia-noite do dia 1)
+        currentTime: startTime, // Começa às 08:00 (horário comercial)
         money: config.initialMoney,
         warehouse,
         warehouseSize: {
