@@ -1,19 +1,30 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { GameState, Task, Order, Truck, Position } from '../types';
-import { initializeGameState, getCell, getManhattanDistance } from '../utils/gameInit';
+import { GameState, Task, Position } from '../types';
+import { initializeGameState, getCell } from '../utils/gameInit';
 import {
     generateRandomOrder,
     generateRandomTruck,
     shouldGenerateOrder,
     shouldGenerateTruck
 } from '../utils/eventGenerator';
-import { ITEM_CATALOG } from '../data/items';
 
 const GAME_TICK_INTERVAL = 100; // 100ms = 10 ticks por segundo
 const TIME_MULTIPLIER = 60; // 1 segundo real = 60 segundos do jogo (1 minuto do jogo)
 
 export function useGameLoop() {
-    const [gameState, setGameState] = useState<GameState>(() => initializeGameState());
+    console.log('🎮 [useGameLoop] Hook inicializado');
+
+    const [gameState, setGameState] = useState<GameState>(() => {
+        console.log('🏗️ [useGameLoop] Inicializando estado do jogo...');
+        const initialState = initializeGameState();
+        console.log('✅ [useGameLoop] Estado inicial criado:', {
+            warehouseSize: initialState.warehouseSize,
+            employees: initialState.employees.length,
+            money: initialState.money,
+        });
+        return initialState;
+    });
+
     const lastOrderTimeRef = useRef(0);
     const lastTruckTimeRef = useRef(0);
     const orderIdCounterRef = useRef(1);
@@ -74,6 +85,7 @@ export function useGameLoop() {
             lastOrderTimeRef.current
         )) {
             const newOrder = generateRandomOrder(newState.currentTime, orderIdCounterRef.current++);
+            console.log(`📋 [useGameLoop] Novo pedido gerado: ${newOrder.id} (${newOrder.priority}) - ${newOrder.items.length} itens`);
             newState = {
                 ...newState,
                 orders: [...newState.orders, newOrder],
@@ -98,6 +110,7 @@ export function useGameLoop() {
                             truckIdCounterRef.current++,
                             dockPosition
                         );
+                        console.log(`🚚 [useGameLoop] Novo caminhão chegou: ${newTruck.id} na doca [${row},${col}] - ${newTruck.items.length} tipos de itens`);
                         newState = {
                             ...newState,
                             trucks: [...newState.trucks, newTruck],

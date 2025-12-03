@@ -5,7 +5,19 @@ import { useGameLoop } from './hooks/useGameLoop';
 import './App.css';
 
 function App() {
+    console.log('🚀 [App] Componente App renderizando...');
     const { gameState, togglePause, changeSpeed, handleCellClick } = useGameLoop();
+
+    console.log('📊 [App] Estado atual do jogo:', {
+        day: gameState.day,
+        money: gameState.money,
+        employees: `${gameState.availableEmployees}/${gameState.employees.length}`,
+        orders: gameState.orders.length,
+        tasks: gameState.tasks.length,
+        trucks: gameState.trucks.length,
+        isPaused: gameState.isPaused,
+        speed: `${gameState.gameSpeed}x`,
+    });
 
     return (
         <div className="app">

@@ -71,15 +71,31 @@ export function WarehouseRenderer({ gameState, onCellClick }: WarehouseRendererP
     const appRef = useRef<PIXI.Application | null>(null);
     const cellGraphicsRef = useRef<PIXI.Graphics[][]>([]);
     const cellLabelsRef = useRef<PIXI.Text[][]>([]);
+    const isInitializedRef = useRef(false);
 
     // Inicializar PixiJS
     useEffect(() => {
-        if (!canvasRef.current) return;
+        console.log('🎮 [WarehouseRenderer] Iniciando setup do PixiJS...');
+
+        if (!canvasRef.current) {
+            console.warn('⚠️ [WarehouseRenderer] canvasRef.current não está disponível');
+            return;
+        }
+
+        if (isInitializedRef.current) {
+            console.log('ℹ️ [WarehouseRenderer] Já inicializado, pulando...');
+            return;
+        }
 
         const width = gameState.warehouseSize.cols * CELL_SIZE;
         const height = gameState.warehouseSize.rows * CELL_SIZE;
 
+        console.log(`📐 [WarehouseRenderer] Dimensões do canvas: ${width}x${height} (${gameState.warehouseSize.cols}x${gameState.warehouseSize.rows} células)`);
+
         const app = new PIXI.Application();
+        console.log('✅ [WarehouseRenderer] Aplicação PixiJS criada');
+
+        let isCancelled = false;
 
         app.init({
             width,
@@ -87,13 +103,33 @@ export function WarehouseRenderer({ gameState, onCellClick }: WarehouseRendererP
             backgroundColor: 0x1a1a1a,
             antialias: true,
         }).then(() => {
-            if (canvasRef.current && app.canvas) {
-                canvasRef.current.appendChild(app.canvas as HTMLCanvasElement);
+            if (isCancelled) {
+                console.log('❌ [WarehouseRenderer] Inicialização cancelada (componente desmontado)');
+                return;
             }
+
+            console.log('✅ [WarehouseRenderer] PixiJS inicializado com sucesso');
+
+            if (!canvasRef.current) {
+                console.error('❌ [WarehouseRenderer] canvasRef perdido após init');
+                return;
+            }
+
+            if (!app.canvas) {
+                console.error('❌ [WarehouseRenderer] app.canvas não existe');
+                return;
+            }
+
+            // Limpar container antes de adicionar
+            canvasRef.current.innerHTML = '';
+            canvasRef.current.appendChild(app.canvas as HTMLCanvasElement);
+            console.log('✅ [WarehouseRenderer] Canvas adicionado ao DOM');
 
             // Criar grid de células
             const cellGraphics: PIXI.Graphics[][] = [];
             const cellLabels: PIXI.Text[][] = [];
+
+            console.log('🎨 [WarehouseRenderer] Criando grid de células...');
 
             for (let row = 0; row < gameState.warehouseSize.rows; row++) {
                 const graphicsRow: PIXI.Graphics[] = [];
@@ -115,6 +151,7 @@ export function WarehouseRenderer({ gameState, onCellClick }: WarehouseRendererP
                     cellGraphic.cursor = 'pointer';
                     cellGraphic.on('pointerdown', () => {
                         if (onCellClick) {
+                            console.log(`🖱️ [WarehouseRenderer] Clique na célula [${row}, ${col}]:`, cell);
                             onCellClick(row, col);
                         }
                     });
@@ -148,14 +185,27 @@ export function WarehouseRenderer({ gameState, onCellClick }: WarehouseRendererP
 
             cellGraphicsRef.current = cellGraphics;
             cellLabelsRef.current = cellLabels;
+            appRef.current = app;
+            isInitializedRef.current = true;
+
+            console.log(`✅ [WarehouseRenderer] Grid criado com sucesso! ${cellGraphics.length}x${cellGraphics[0]?.length || 0} células`);
+            console.log(`📊 [WarehouseRenderer] Total de objetos no stage: ${app.stage.children.length}`);
+        }).catch((error) => {
+            console.error('❌ [WarehouseRenderer] Erro ao inicializar PixiJS:', error);
         });
 
-        appRef.current = app;
-
         return () => {
-            app.destroy(true, { children: true });
+            console.log('🧹 [WarehouseRenderer] Limpando componente...');
+            isCancelled = true;
+
+            if (appRef.current) {
+                appRef.current.destroy(true, { children: true });
+                console.log('✅ [WarehouseRenderer] Aplicação PixiJS destruída');
+            }
+
+            isInitializedRef.current = false;
         };
-    }, [gameState.warehouseSize]);
+    }, []);
 
     // Atualizar cores das células quando o estado mudar
     useEffect(() => {
